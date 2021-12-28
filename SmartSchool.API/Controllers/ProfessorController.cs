@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SmartSchool.API.Data;
 using SmartSchool.API.Models;
 
 namespace SmartSchool.API.Controllers
@@ -8,72 +8,63 @@ namespace SmartSchool.API.Controllers
     [ApiController]
     public class ProfessorController : ControllerBase
     {
-        public ProfessorController()
+        public ProfessorController(SmartContext context)
         {
+            _context = context;
         }
 
-        List<Professor> professores = new List<Professor>()
-        {
-            new Professor()
-            {
-                Id = 1,
-                Nome = "João"
-            },
-            new Professor()
-            {
-                Id = 2,
-                Nome = "Carlos"
-            },
-            new Professor()
-            {
-                Id = 3,
-                Nome = "Manuel"
-            }
-        };
+        private readonly SmartContext _context;
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(professores);
+            return Ok(_context.Professores);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetbyId(int id)
         {
-            var retorno = professores.Where(professor => professor.Id == id);
+            var retorno = _context.Professores.Where(professor => professor.Id == id);
             return Ok(retorno);
         }
 
         [HttpGet("Filter")]
         public IActionResult GetByFilter(string? nome = "", string? sobrenome = "")
         {
-            var retorno = professores.Where(professor => professor.Nome.Contains(nome ?? ""));
+            var retorno = _context.Professores.Where(professor => professor.Nome.Contains(nome ?? ""));
             return Ok(retorno);
         }
 
         [HttpPost]
         public IActionResult Post(Professor professor)
         {
-            professores.Add(professor);
+            _context.Add(professor);
+            _context.SaveChanges();
             return Ok();
         }
 
         [HttpPut("{id}")]
         public IActionResult Put(int id, Professor professor)
         {
+            _context.Update(professor);
+            _context.SaveChanges();
             return Ok();
         }
 
         [HttpPatch("{id}")]
         public IActionResult Patch(int id, Professor professor)
         {
+            _context.Update(professor);
+            _context.SaveChanges();
             return Ok();
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            professores.RemoveAll(professor => professor.Id == id);
+            var professor = _context.Professores.FirstOrDefault(professor => professor.Id == id);
+
+            _context.Remove(professor);
 
             return Ok();
         }

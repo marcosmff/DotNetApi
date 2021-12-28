@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SmartSchool.API.Data;
+using SmartSchool.API.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +10,59 @@ namespace SmartSchool.API.Controllers
     [ApiController]
     public class AlunoController : ControllerBase
     {
-        // GET: api/<AlunoController>
+        private readonly SmartContext _context;
+
+        public AlunoController(SmartContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(_context.Alunos);
         }
 
-        // GET api/<AlunoController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(int id)
         {
-            return "value";
+            var aluno = _context.Alunos.FirstOrDefault(a => a.Id == id);
+            return Ok(_context.Alunos);
         }
 
-        // POST api/<AlunoController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post(Aluno aluno)
         {
+            _context.Add(aluno);
+
+            return Ok();
         }
 
-        // PUT api/<AlunoController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, Aluno aluno)
         {
+            _context.Update(aluno);
+            _context.SaveChanges();
+
+            return Ok();
         }
 
-        // DELETE api/<AlunoController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPatch("{id}")]
+        public IActionResult Patch(int id, Aluno aluno)
         {
+            _context.Update(aluno);
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var aluno = _context.Alunos.FirstOrDefault(a => a.Id == id);
+            _context.Remove(aluno);
+
+            return Ok();
         }
     }
 }
