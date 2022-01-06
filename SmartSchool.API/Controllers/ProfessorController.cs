@@ -8,65 +8,69 @@ namespace SmartSchool.API.Controllers
     [ApiController]
     public class ProfessorController : ControllerBase
     {
-        public ProfessorController(SmartContext context)
-        {
-            _context = context;
-        }
+        private readonly IRepository _repo;
 
-        private readonly SmartContext _context;
+        public ProfessorController(IRepository repo)
+        {
+            _repo = repo;
+        }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_context.Professores);
+            var result = _repo.GetAllProfessores(true);
+            
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetbyId(int id)
         {
-            var retorno = _context.Professores.Where(professor => professor.Id == id);
-            return Ok(retorno);
-        }
+            var result = _repo.GetProfessorById(id, true);
 
-        [HttpGet("Filter")]
-        public IActionResult GetByFilter(string? nome = "", string? sobrenome = "")
-        {
-            var retorno = _context.Professores.Where(professor => professor.Nome.Contains(nome ?? ""));
-            return Ok(retorno);
+            return Ok(result);
         }
 
         [HttpPost]
         public IActionResult Post(Professor professor)
         {
-            _context.Add(professor);
-            _context.SaveChanges();
-            return Ok();
+            _repo.Add(professor);
+
+            if (_repo.SaveChanges())
+                return Ok("Professor inserido com sucesso");
+            else return BadRequest("Não foi possível inserir o professor");
         }
 
         [HttpPut("{id}")]
         public IActionResult Put(int id, Professor professor)
         {
-            _context.Update(professor);
-            _context.SaveChanges();
-            return Ok();
+            _repo.Update(professor);
+
+            if (_repo.SaveChanges())
+                return Ok("Professor alterado com sucesso");
+            else return BadRequest("Não foi possível alterar o professor");
         }
 
         [HttpPatch("{id}")]
         public IActionResult Patch(int id, Professor professor)
         {
-            _context.Update(professor);
-            _context.SaveChanges();
-            return Ok();
+            _repo.Update(professor);
+
+            if (_repo.SaveChanges())
+                return Ok("Professor alterado com sucesso");
+            else return BadRequest("Não foi possível alterar o professor");
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var professor = _context.Professores.FirstOrDefault(professor => professor.Id == id);
+            var professor = _repo.GetProfessorById(id);
 
-            _context.Remove(professor);
+            _repo.Remove(professor);
 
-            return Ok();
+            if (_repo.SaveChanges())
+                return Ok("Professor alterado com sucesso");
+            else return BadRequest("Não foi possível alterar o professor");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SmartSchool.API.Data;
 using SmartSchool.API.Models;
 
@@ -10,59 +11,69 @@ namespace SmartSchool.API.Controllers
     [ApiController]
     public class AlunoController : ControllerBase
     {
-        private readonly SmartContext _context;
+        private readonly IRepository _repo;
 
-        public AlunoController(SmartContext context)
+        public AlunoController(IRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_context.Alunos);
+            var result = _repo.GetAllAlunos(true);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var aluno = _context.Alunos.FirstOrDefault(a => a.Id == id);
-            return Ok(_context.Alunos);
+            var result = _repo.GetAlunoById(id, true);
+
+            return Ok(result);
         }
 
         [HttpPost]
         public IActionResult Post(Aluno aluno)
         {
-            _context.Add(aluno);
+            _repo.Add(aluno);
+            if (_repo.SaveChanges())
+                return Ok(aluno);
 
-            return Ok();
+            return BadRequest("Não foi possível inserir o aluno");
         }
 
         [HttpPut("{id}")]
         public IActionResult Put(int id, Aluno aluno)
         {
-            _context.Update(aluno);
-            _context.SaveChanges();
+            _repo.Update(aluno);
+            if (_repo.SaveChanges())
+                return Ok(aluno);
 
-            return Ok();
+            return BadRequest("Não foi possível alterar o aluno");
         }
 
         [HttpPatch("{id}")]
         public IActionResult Patch(int id, Aluno aluno)
         {
-            _context.Update(aluno);
-            _context.SaveChanges();
+            _repo.Update(aluno);
+            if (_repo.SaveChanges())
+                return Ok(aluno);
 
-            return Ok();
+            return BadRequest("Não foi possível alterar o aluno");
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var aluno = _context.Alunos.FirstOrDefault(a => a.Id == id);
-            _context.Remove(aluno);
+            var aluno = _repo.GetAlunoById(id, false);
 
-            return Ok();
+            _repo.Remove(aluno);
+
+            if (_repo.SaveChanges())
+                return Ok("Aluno removido");
+
+            return BadRequest("Não foi possível alterar o aluno");
         }
     }
 }
