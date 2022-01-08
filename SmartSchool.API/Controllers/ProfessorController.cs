@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using SmartSchool.API.Data;
+using SmartSchool.API.Dtos;
 using SmartSchool.API.Models;
 
 namespace SmartSchool.API.Controllers
@@ -9,18 +11,22 @@ namespace SmartSchool.API.Controllers
     public class ProfessorController : ControllerBase
     {
         private readonly IRepository _repo;
+        private readonly IMapper _mapper;
 
-        public ProfessorController(IRepository repo)
+        public ProfessorController(IRepository repo, IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
             var result = _repo.GetAllProfessores(true);
+
+            var professoresResult = _mapper.Map<IEnumerable<ProfessorDto>>(result);
             
-            return Ok(result);
+            return Ok(professoresResult);
         }
 
         [HttpGet("{id}")]
@@ -28,12 +34,16 @@ namespace SmartSchool.API.Controllers
         {
             var result = _repo.GetProfessorById(id, true);
 
-            return Ok(result);
+            var professorResult = _mapper.Map<ProfessorDto>(result);
+
+            return Ok(professorResult);
         }
 
         [HttpPost]
-        public IActionResult Post(Professor professor)
+        public IActionResult Post(ProfessorCadastroDto professorCadastro)
         {
+            var professor = _mapper.Map<Professor>(professorCadastro);
+
             _repo.Add(professor);
 
             if (_repo.SaveChanges())
@@ -42,8 +52,10 @@ namespace SmartSchool.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, Professor professor)
+        public IActionResult Put(int id, ProfessorCadastroDto professorCadastro)
         {
+            var professor = _mapper.Map<Professor>(professorCadastro);
+
             _repo.Update(professor);
 
             if (_repo.SaveChanges())
@@ -52,8 +64,10 @@ namespace SmartSchool.API.Controllers
         }
 
         [HttpPatch("{id}")]
-        public IActionResult Patch(int id, Professor professor)
+        public IActionResult Patch(int id, ProfessorCadastroDto professorCadastro)
         {
+            var professor = _mapper.Map<Professor>(professorCadastro);
+
             _repo.Update(professor);
 
             if (_repo.SaveChanges())
