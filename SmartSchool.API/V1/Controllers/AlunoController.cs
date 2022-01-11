@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SmartSchool.API.Data;
-using SmartSchool.API.Dtos;
+using SmartSchool.API.V1.Dtos;
 using SmartSchool.API.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace SmartSchool.API.Controllers
+namespace SmartSchool.API.V1.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class AlunoController : ControllerBase
     {
@@ -21,6 +22,10 @@ namespace SmartSchool.API.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Retorna todos os alunos
+        /// </summary>
+        /// <returns>Retorna todos os alunos</returns>
         [HttpGet]
         public IActionResult Get()
         {
@@ -30,6 +35,11 @@ namespace SmartSchool.API.Controllers
             return Ok(alunosResult);
         }
 
+        /// <summary>
+        /// Retorna o aluno pelo ID
+        /// </summary>
+        /// <param name="id">ID pelo qual será buscado o aluno</param>
+        /// <returns>Retorna o aluno correspondente ao ID</returns>
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {

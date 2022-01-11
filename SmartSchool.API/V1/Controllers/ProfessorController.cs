@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SmartSchool.API.Data;
-using SmartSchool.API.Dtos;
+using SmartSchool.API.V1.Dtos;
 using SmartSchool.API.Models;
 
-namespace SmartSchool.API.Controllers
+namespace SmartSchool.API.V1.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class ProfessorController : ControllerBase
     {

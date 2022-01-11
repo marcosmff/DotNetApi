@@ -1,16 +1,18 @@
-﻿namespace SmartSchool.API.Dtos
+﻿namespace SmartSchool.API.V2.Dtos
 {
-    public class ProfessorCadastroDto
+    public class AlunoCadastroDto
     {
         public int Id { get; set; }
 
-        public int Registro { get; set; }
+        public int Matricula { get; set; }
 
         public string Nome { get; set; }
 
         public string Sobrenome { get; set; }
 
-        public string? Telefone { get; set; } = null;
+        public string Telefone { get; set; }
+
+        public DateTime DataNascimento { get; set; }
 
         public DateTime DataInicio { get; set; } = DateTime.Now;
 
