@@ -11,9 +11,16 @@
             <summary>
             Retorna todos os alunos
             </summary>
-            <returns></returns>
+            <returns>Retorna todos os alunos</returns>
         </member>
-        <member name="M:SmartSchool.API.V2.Controllers.AlunoController.Get">
+        <member name="M:SmartSchool.API.V1.Controllers.AlunoController.Get(System.Int32)">
+            <summary>
+            Retorna o aluno pelo ID
+            </summary>
+            <param name="id">ID pelo qual será buscado o aluno</param>
+            <returns>Retorna o aluno correspondente ao ID</returns>
+        </member>
+        <member name="M:SmartSchool.API.V2.Controllers.AlunoController.Get(SmartSchool.API.Helpers.PageParams)">
             <summary>
             Retorna todos os alunos
             </summary>

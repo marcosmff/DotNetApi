@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SmartSchool.API.Data;
 using SmartSchool.API.V2.Dtos;
 using SmartSchool.API.Models;
+using SmartSchool.API.Helpers;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,10 +28,12 @@ namespace SmartSchool.API.V2.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get([FromQuery]PageParams pageParams)
         {
-            var result = _repo.GetAllAlunos(true);
+            var result = await _repo.GetAllAlunosAsync(pageParams, true);
             var alunosResult = _mapper.Map<IEnumerable<AlunoDto>>(result);
+
+            Response.AddPagination(result.CurrentPage, result.PageSize, result.TotalCount, result.TotalPages);
 
             return Ok(alunosResult);
         }

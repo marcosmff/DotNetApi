@@ -1,4 +1,5 @@
-﻿using SmartSchool.API.Models;
+﻿using SmartSchool.API.Helpers;
+using SmartSchool.API.Models;
 
 namespace SmartSchool.API.Data
 {
@@ -11,6 +12,8 @@ namespace SmartSchool.API.Data
         public void Remove<T>(T entity) where T : class;
 
         public bool SaveChanges();
+
+        public Task<PageList<Aluno>> GetAllAlunosAsync(PageParams pageParams, bool includeProfessor = false);
 
         public Aluno[] GetAllAlunos(bool includeProfessor = false);
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SmartSchool.API.Helpers;
 using SmartSchool.API.Models;
 
 namespace SmartSchool.API.Data
@@ -30,6 +31,31 @@ namespace SmartSchool.API.Data
         public bool SaveChanges()
         {
             return (_context.SaveChanges() > 0);
+        }
+
+        public async Task<PageList<Aluno>> GetAllAlunosAsync(PageParams pageParams, bool includeProfessor = false)
+        {
+            IQueryable<Aluno> query = _context.Alunos;
+
+            if (includeProfessor)
+            {
+                query = query.Include(ad => ad.AlunosDisciplinas)
+                             .ThenInclude(d => d.Disciplina)
+                             .ThenInclude(p => p.Professor);
+            }
+
+            if (pageParams.Matricula != null)
+                query = query.Where(aluno => aluno.Matricula == pageParams.Matricula);
+
+            if (!string.IsNullOrEmpty(pageParams.Nome))
+                query = query.Where(aluno => aluno.Nome.ToUpper().Contains(pageParams.Nome.ToUpper()) || aluno.Sobrenome.ToUpper().Contains(pageParams.Nome.ToUpper()));
+
+            if (pageParams.Ativo != null)
+                query = query.Where(aluno => aluno.Ativo == pageParams.Ativo);
+
+            query = query.AsNoTracking().OrderBy(a => a.Id);
+
+            return await PageList<Aluno>.CreateAsync(query, pageParams.PageNumber, pageParams.PageSize);
         }
 
         public Aluno[] GetAllAlunos(bool includeProfessor = false)
