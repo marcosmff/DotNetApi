@@ -5,21 +5,14 @@ namespace SmartSchool.API.Data
 {
     public class SmartContext : DbContext
     {
-        public SmartContext(DbContextOptions<SmartContext> options) : base(options)
-        {
-        }
-
+        public SmartContext(DbContextOptions<SmartContext> options) : base(options) { }
         public DbSet<Aluno> Alunos { get; set; }
-
         public DbSet<AlunoCurso> AlunosCursos { get; set; }
-
         public DbSet<AlunoDisciplina> AlunosDisciplinas { get; set; }
-
         public DbSet<Curso> Cursos { get; set; }
-
         public DbSet<Disciplina> Disciplinas { get; set; }
-
         public DbSet<Professor> Professores { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

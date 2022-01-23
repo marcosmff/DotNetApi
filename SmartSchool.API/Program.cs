@@ -2,9 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using SmartSchool.API;
 using SmartSchool.API.Configurations;
 using SmartSchool.API.Data;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -19,10 +17,11 @@ builder.Services.AddControllers().AddNewtonsoftJson(an => an.SerializerSettings.
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddEndpointsApiExplorer
 
+var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
 builder.Services.AddDbContext<SmartContext>(
-    context => context.UseSqlite(builder.Configuration.GetConnectionString("Default"))
+    context => context.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
 );
 
 builder.Services.AddScoped<IRepository, Repository>();
